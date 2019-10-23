@@ -4,7 +4,6 @@ import Student from '../models/Student';
 class StudentController {
   async store(req, res) {
     const schema = Yup.object().shape({
-      provider: Yup.boolean().required(true),
       name: Yup.string().required(),
       email: Yup.string()
         .email()
@@ -37,7 +36,6 @@ class StudentController {
 
   async update(req, res) {
     const schema = Yup.object().shape({
-      provider: Yup.boolean().required(true),
       name: Yup.string(),
       email: Yup.string().email(),
       age: Yup.number().integer(),
