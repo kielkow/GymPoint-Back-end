@@ -49,7 +49,7 @@ class StudentController {
 
     const { email } = req.body;
 
-    const student = await Student.findByPk(req.studentId);
+    const student = await Student.findByPk(req.userId);
 
     if (email !== student.email) {
       const studentExists = await Student.findOne({
