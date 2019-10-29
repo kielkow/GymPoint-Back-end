@@ -3,7 +3,10 @@ import Plan from '../models/Plan';
 
 class PlanController {
   async index(req, res) {
-    const plans = await Plan.findAll();
+    const plans = await Plan.findAll({
+      where: { canceled_at: null },
+      order: ['id'],
+    });
     return res.json(plans);
   }
 
@@ -44,13 +47,23 @@ class PlanController {
       return res.status(400).json({ error: 'Validation fails' });
     }
 
-    const { id } = req.params;
+    const { title } = req.body;
 
-    const plan = await Plan.findOne({ where: { id } });
+    const plan = await Plan.findByPk(req.params.id);
 
     if (!plan) return res.status(400).json({ error: 'Plan not found' });
 
-    const { title, duration, price } = await plan.update(req.body);
+    if (title !== plan.title) {
+      const planExists = await Plan.findOne({
+        where: { title },
+      });
+
+      if (planExists) {
+        return res.status(400).json({ error: 'Plan already exist' });
+      }
+    }
+
+    const { id, duration, price } = await plan.update(req.body);
 
     return res.json({ id, title, duration, price });
   }

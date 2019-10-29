@@ -42,9 +42,6 @@ class StudentController {
       provider: Yup.bool()
         .oneOf([true], 'Field must be checked')
         .required(),
-      id: Yup.number()
-        .integer()
-        .required(),
       name: Yup.string(),
       email: Yup.string().email(),
       age: Yup.number().integer(),
@@ -56,16 +53,20 @@ class StudentController {
       return res.status(400).json({ error: 'Validation fails' });
     }
 
-    const { id, email } = req.body;
+    const { email } = req.body;
 
-    const student = await Student.findOne({ where: { id } });
+    const student = await Student.findByPk(req.params.id);
 
     if (!student) return res.status(400).json({ error: 'Student not found' });
 
-    const studentExists = await Student.findOne({ where: { email } });
+    if (email !== student.email) {
+      const studentExists = await Student.findOne({
+        where: { email },
+      });
 
-    if (!(id === studentExists.id)) {
-      return res.status(400).json({ error: 'Student already exists' });
+      if (studentExists) {
+        return res.status(400).json({ error: 'Student already exist' });
+      }
     }
 
     const { name, age, weigth, heigth } = await student.update(req.body);
