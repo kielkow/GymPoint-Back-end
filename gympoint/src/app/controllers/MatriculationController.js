@@ -41,9 +41,15 @@ class MatriculationController {
     const end_date = addMonths(parseISO(req.body.start_date), plan.duration);
 
     // Create matriculation
-    const matriculation = await Matriculation.create(req.body, {
-      include: [end_date, price],
-    });
+    const matriculation = {
+      student_id: req.body.student_id,
+      plan_id: req.body.plan_id,
+      start_date: req.body.start_date,
+      end_date,
+      price,
+    };
+
+    await Matriculation.create(matriculation);
 
     return res.json(matriculation);
   }
