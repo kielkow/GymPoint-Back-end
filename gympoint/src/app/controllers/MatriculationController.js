@@ -7,6 +7,7 @@ class MatriculationController {
   async index(req, res) {
     const matriculations = await Matriculation.findAll({
       where: { canceled_at: null },
+      order: ['id'],
     });
     return res.json(matriculations);
   }
@@ -36,7 +37,7 @@ class MatriculationController {
 
     if (!plan) return res.status(400).json({ error: 'Plan not found' });
 
-    // Calculation price and end_date
+    // Calculated price and end_date
     const price = plan.duration * plan.price;
     const end_date = addMonths(parseISO(req.body.start_date), plan.duration);
 
@@ -56,7 +57,6 @@ class MatriculationController {
 
   async update(req, res) {
     const schema = Yup.object().shape({
-      student_id: Yup.number().required(),
       plan_id: Yup.number().required(),
       start_date: Yup.date().required(),
     });
@@ -65,33 +65,31 @@ class MatriculationController {
       return res.status(400).json({ error: 'Validation fails' });
     }
 
-    const { plan_id } = req.body;
-
+    // Check if matriculation exists
     const matriculation = await Matriculation.findOne({
-      where: { student_id: req.params.id },
+      where: { id: req.params.id },
     });
 
     if (!matriculation)
       return res.status(400).json({ error: 'Matriculation not found' });
 
-    if (plan_id !== matriculation.plan_id) {
-      const matriculationExists = await Matriculation.findOne({
-        where: { plan_id },
-      });
+    // Calculation price and end_date
+    const plan = await Plan.findByPk(req.body.plan_id);
 
-      if (matriculationExists) {
-        return res.status(400).json({ error: 'Matriculation already exist' });
-      }
-    }
+    if (!plan) return res.status(400).json({ error: 'Plan not found' });
 
-    const {
-      student_id,
-      start_date,
+    const price = plan.duration * plan.price;
+    const end_date = addMonths(parseISO(req.body.start_date), plan.duration);
+
+    // Update matriculation
+    await matriculation.update({
+      plan_id: req.body.plan_id,
+      start_date: req.body.start_date,
       end_date,
       price,
-    } = await matriculation.update(req.body);
+    });
 
-    return res.json({ student_id, plan_id, start_date, end_date, price });
+    return res.json(matriculation);
   }
 
   async delete(req, res) {
