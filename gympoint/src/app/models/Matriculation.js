@@ -9,6 +9,7 @@ class Matriculation extends Model {
         start_date: Sequelize.DATE,
         end_date: Sequelize.DATE,
         price: Sequelize.FLOAT,
+        canceled_at: Sequelize.DATE,
       },
       {
         sequelize,
