@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import { addMonths } from 'date-fns';
+import { addMonths, parseISO } from 'date-fns';
 import Matriculation from '../models/Matriculation';
 import Plan from '../models/Plan';
 
@@ -36,13 +36,13 @@ class MatriculationController {
 
     if (!plan) return res.status(400).json({ error: 'Plan not found' });
 
-    // Calculation price and end_at
+    // Calculation price and end_date
     const price = plan.duration * plan.price;
-    const end_at = addMonths(req.body.start_date, plan.duration);
+    const end_date = addMonths(parseISO(req.body.start_date), plan.duration);
 
     // Create matriculation
     const matriculation = await Matriculation.create(req.body, {
-      include: [end_at, price],
+      include: [end_date, price],
     });
 
     return res.json(matriculation);
