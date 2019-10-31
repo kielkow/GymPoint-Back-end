@@ -2,6 +2,9 @@ import * as Yup from 'yup';
 import { addMonths, parseISO } from 'date-fns';
 import Matriculation from '../models/Matriculation';
 import Plan from '../models/Plan';
+import Student from '../models/Student';
+
+import Mail from '../../lib/Mail';
 
 class MatriculationController {
   async index(req, res) {
@@ -51,6 +54,23 @@ class MatriculationController {
     };
 
     await Matriculation.create(matriculation);
+
+    // Send email for student
+    const student = await Student.findByPk(req.body.student_id);
+
+    await Mail.sendMail({
+      to: `${student.name} <${student.email}>`,
+      subject: 'Matricula cadastrada',
+      text: 'Você foi matriculado na GymPoint!',
+      template: 'matriculation',
+      context: {
+        student: student.name,
+        plan: plan.name,
+        start_date: matriculation.start_date,
+        end_date: matriculation.end_date,
+        price: matriculation.price,
+      },
+    });
 
     return res.json(matriculation);
   }
