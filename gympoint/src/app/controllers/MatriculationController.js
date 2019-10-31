@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import { addMonths, parseISO } from 'date-fns';
+import { addMonths, parseISO, format, pt } from 'date-fns';
 import Matriculation from '../models/Matriculation';
 import Plan from '../models/Plan';
 import Student from '../models/Student';
@@ -65,9 +65,21 @@ class MatriculationController {
       template: 'matriculation',
       context: {
         student: student.name,
-        plan: plan.name,
-        start_date: matriculation.start_date,
-        end_date: matriculation.end_date,
+        plan: plan.title,
+        start_date: format(
+          matriculation.end_date,
+          "'dia' dd 'de' MMMM', às' H:mm'h'",
+          {
+            locale: pt,
+          }
+        ),
+        end_date: format(
+          matriculation.end_date,
+          "'dia' dd 'de' MMMM', às' H:mm'h'",
+          {
+            locale: pt,
+          }
+        ),
         price: matriculation.price,
       },
     });
