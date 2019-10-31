@@ -1,5 +1,7 @@
 import * as Yup from 'yup';
-import { addMonths, parseISO, format, pt } from 'date-fns';
+import { addMonths, parseISO, format } from 'date-fns';
+import pt from 'date-fns/locale/pt';
+import { zonedTimeToUtc } from 'date-fns-tz';
 import Matriculation from '../models/Matriculation';
 import Plan from '../models/Plan';
 import Student from '../models/Student';
@@ -42,13 +44,19 @@ class MatriculationController {
 
     // Calculated price and end_date
     const price = plan.duration * plan.price;
-    const end_date = addMonths(parseISO(req.body.start_date), plan.duration);
+    const end_date = addMonths(
+      zonedTimeToUtc(parseISO(req.body.start_date), 'America/Sao_Paulo'),
+      plan.duration
+    );
 
     // Create matriculation
     const matriculation = {
       student_id: req.body.student_id,
       plan_id: req.body.plan_id,
-      start_date: req.body.start_date,
+      start_date: zonedTimeToUtc(
+        parseISO(req.body.start_date),
+        'America/Sao_Paulo'
+      ),
       end_date,
       price,
     };
@@ -67,7 +75,7 @@ class MatriculationController {
         student: student.name,
         plan: plan.title,
         start_date: format(
-          matriculation.end_date,
+          matriculation.start_date,
           "'dia' dd 'de' MMMM', às' H:mm'h'",
           {
             locale: pt,
