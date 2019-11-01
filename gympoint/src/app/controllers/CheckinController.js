@@ -23,11 +23,12 @@ class CheckinController {
       return res.status(400).json({ error: 'Validation fails' });
     }
 
-    // Validation Date
-    const startWeek = startOfWeek(new Date(), { weekStartsOn: 1 });
-    const endWeek = endOfWeek(new Date(), { weekStartsOn: 1 });
+    // Validation Date and count checkins
+    const today = new Date();
+    const startWeek = startOfWeek(today, { weekStartsOn: 1 });
+    const endWeek = endOfWeek(today, { weekStartsOn: 1 });
 
-    if (isWithinRange(new Date(), startWeek, endWeek)) {
+    if (isWithinRange(today, startWeek, endWeek)) {
       const allCheckins = await Checkin.findAll({
         where: { student_id: req.params.id },
       });

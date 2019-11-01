@@ -1,12 +1,10 @@
 import * as Yup from 'yup';
-import { addMonths, parseISO, format } from 'date-fns';
-import pt from 'date-fns/locale/pt';
+import { addMonths, parseISO } from 'date-fns';
 import { zonedTimeToUtc } from 'date-fns-tz';
 import Matriculation from '../models/Matriculation';
 import Plan from '../models/Plan';
-import Student from '../models/Student';
-
-import Mail from '../../lib/Mail';
+import MatriculationMail from '../jobs/MatriculationMail';
+import Queue from '../../lib/Queue';
 
 class MatriculationController {
   async index(req, res) {
@@ -64,32 +62,8 @@ class MatriculationController {
     await Matriculation.create(matriculation);
 
     // Send email for student
-    const student = await Student.findByPk(req.body.student_id);
-
-    await Mail.sendMail({
-      to: `${student.name} <${student.email}>`,
-      subject: 'Matricula cadastrada',
-      text: 'Você foi matriculado na GymPoint!',
-      template: 'matriculation',
-      context: {
-        student: student.name,
-        plan: plan.title,
-        start_date: format(
-          matriculation.start_date,
-          "'dia' dd 'de' MMMM', às' H:mm'h'",
-          {
-            locale: pt,
-          }
-        ),
-        end_date: format(
-          matriculation.end_date,
-          "'dia' dd 'de' MMMM', às' H:mm'h'",
-          {
-            locale: pt,
-          }
-        ),
-        price: matriculation.price,
-      },
+    await Queue.add(MatriculationMail.key, {
+      matriculation,
     });
 
     return res.json(matriculation);
