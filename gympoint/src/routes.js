@@ -5,6 +5,7 @@ import SessionController from './app/controllers/SessionController';
 import StudentController from './app/controllers/StudentController';
 import PlanController from './app/controllers/PlanController';
 import MatriculationController from './app/controllers/MatriculationController';
+import CheckinController from './app/controllers/CheckinController';
 
 import authMiddleware from './app/middlewares/auth';
 
@@ -29,5 +30,8 @@ routes.get('/matriculations', MatriculationController.index);
 routes.post('/matriculations', MatriculationController.store);
 routes.put('/matriculations/:id', MatriculationController.update);
 routes.delete('/matriculations/:id', MatriculationController.delete);
+
+routes.post('/students/:id/checkins', CheckinController.store);
+routes.get('/students/:id/checkins', CheckinController.index);
 
 export default routes;
