@@ -14,6 +14,9 @@ const routes = new Router();
 routes.post('/users', UserController.store);
 routes.post('/sessions', SessionController.store);
 
+routes.post('/students/:id/checkins', CheckinController.store);
+routes.get('/students/:id/checkins', CheckinController.index);
+
 routes.use(authMiddleware);
 
 routes.put('/users', UserController.update);
@@ -30,8 +33,5 @@ routes.get('/matriculations', MatriculationController.index);
 routes.post('/matriculations', MatriculationController.store);
 routes.put('/matriculations/:id', MatriculationController.update);
 routes.delete('/matriculations/:id', MatriculationController.delete);
-
-routes.post('/students/:id/checkins', CheckinController.store);
-routes.get('/students/:id/checkins', CheckinController.index);
 
 export default routes;
