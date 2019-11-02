@@ -3,6 +3,7 @@ import { addMonths, parseISO } from 'date-fns';
 import { zonedTimeToUtc } from 'date-fns-tz';
 import Matriculation from '../models/Matriculation';
 import Plan from '../models/Plan';
+import Student from '../models/Student';
 import MatriculationMail from '../jobs/MatriculationMail';
 import Queue from '../../lib/Queue';
 
@@ -62,8 +63,11 @@ class MatriculationController {
     await Matriculation.create(matriculation);
 
     // Send email for student
+    const student = await Student.findByPk(req.body.student_id);
     await Queue.add(MatriculationMail.key, {
       matriculation,
+      student,
+      plan,
     });
 
     return res.json(matriculation);

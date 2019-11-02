@@ -3,8 +3,8 @@ export default {
   port: 2525,
   secure: false,
   auth: {
-    user: '5cce00db598247',
-    pass: 'ef287da6b2cf2b',
+    user: '6ad024844f9480',
+    pass: '539a4c283dd671',
   },
   default: {
     from: 'Equipe GymPoint <noreply@gympoint.com>',
