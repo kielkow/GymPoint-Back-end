@@ -6,6 +6,7 @@ import StudentController from './app/controllers/StudentController';
 import PlanController from './app/controllers/PlanController';
 import MatriculationController from './app/controllers/MatriculationController';
 import CheckinController from './app/controllers/CheckinController';
+import HelpOrderController from './app/controllers/HelpOrderController';
 
 import authMiddleware from './app/middlewares/auth';
 
@@ -33,5 +34,10 @@ routes.get('/matriculations', MatriculationController.index);
 routes.post('/matriculations', MatriculationController.store);
 routes.put('/matriculations/:id', MatriculationController.update);
 routes.delete('/matriculations/:id', MatriculationController.delete);
+
+routes.get('/students/help-orders', HelpOrderController.indexNoAnswer);
+routes.post('/students/:id/help-orders', HelpOrderController.storeQuestion);
+routes.get('/students/:id/help-orders', HelpOrderController.indexStudentAnswer);
+routes.post('/students/:id/help-orders', HelpOrderController.storeAnswer);
 
 export default routes;

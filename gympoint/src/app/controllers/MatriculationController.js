@@ -119,7 +119,7 @@ class MatriculationController {
 
     await matriculation.save();
 
-    return res.send(matriculation);
+    return res.json(matriculation);
   }
 }
 

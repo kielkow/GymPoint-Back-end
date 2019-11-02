@@ -75,7 +75,7 @@ class PlanController {
 
     await plan.save();
 
-    return res.send(plan);
+    return res.json(plan);
   }
 }
 
