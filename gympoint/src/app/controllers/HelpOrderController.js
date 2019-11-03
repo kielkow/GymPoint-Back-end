@@ -1,5 +1,8 @@
 import * as Yup from 'yup';
 import HelpOrder from '../models/HelpOrder';
+import Student from '../models/Student';
+import HelpOrderAnswerMail from '../jobs/HelpOrderAnswerMail';
+import Queue from '../../lib/Queue';
 
 class HelpOrderController {
   async indexNoAnswer(req, res) {
@@ -40,9 +43,17 @@ class HelpOrderController {
       return res.status(400).json({ error: 'Validation fails' });
     }
 
+    // Update helporder with the answer
     const helporder = await HelpOrder.findByPk(req.params.id);
 
     await helporder.update({ answer: req.body.answer, answer_at: new Date() });
+
+    // Send email for student with the answer
+    const student = await Student.findByPk(helporder.student_id);
+    await Queue.add(HelpOrderAnswerMail.key, {
+      helporder,
+      student,
+    });
 
     return res.json(helporder);
   }
