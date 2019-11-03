@@ -37,7 +37,10 @@ routes.delete('/matriculations/:id', MatriculationController.delete);
 
 routes.get('/students/help-orders', HelpOrderController.indexNoAnswer);
 routes.post('/students/:id/help-orders', HelpOrderController.storeQuestion);
-routes.get('/students/:id/help-orders', HelpOrderController.indexStudentAnswer);
-routes.post('/students/:id/help-orders', HelpOrderController.storeAnswer);
+routes.get(
+  '/students/:id/help-orders',
+  HelpOrderController.indexStudentQuestions
+);
+routes.post('/help-orders/:id/answer', HelpOrderController.storeAnswer);
 
 export default routes;
