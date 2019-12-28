@@ -10,6 +10,7 @@ import Queue from '../../lib/Queue';
 class MatriculationController {
   async index(req, res) {
     const matriculations = await Matriculation.findAll({
+      attributes: ['id', 'start_date', 'end_date', 'price', 'active'],
       where: { canceled_at: null },
       order: ['id'],
     });
