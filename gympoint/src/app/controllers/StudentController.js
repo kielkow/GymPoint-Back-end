@@ -1,7 +1,26 @@
 import * as Yup from 'yup';
+import { Op } from 'sequelize';
 import Student from '../models/Student';
 
 class StudentController {
+  async index(req, res) {
+    if (req.query.name) {
+      const students = await Student.findAll({
+        where: {
+          name: {
+            [Op.iRegexp]: req.query.name,
+          },
+        },
+        order: ['id'],
+      });
+      return res.json(students);
+    }
+    const students = await Student.findAll({
+      order: ['id'],
+    });
+    return res.json(students);
+  }
+
   async store(req, res) {
     const schema = Yup.object().shape({
       provider: Yup.bool()
