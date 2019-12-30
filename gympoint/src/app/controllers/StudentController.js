@@ -4,6 +4,8 @@ import Student from '../models/Student';
 
 class StudentController {
   async index(req, res) {
+    const { page = 1 } = req.query;
+
     if (req.query.name) {
       const students = await Student.findAll({
         where: {
@@ -12,11 +14,16 @@ class StudentController {
           },
         },
         order: ['id'],
+        limit: 10,
+        offset: (page - 1) * 10,
       });
       return res.json(students);
     }
+
     const students = await Student.findAll({
       order: ['id'],
+      limit: 10,
+      offset: (page - 1) * 10,
     });
     return res.json(students);
   }

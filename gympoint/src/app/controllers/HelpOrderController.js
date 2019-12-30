@@ -6,7 +6,13 @@ import Queue from '../../lib/Queue';
 
 class HelpOrderController {
   async indexNoAnswer(req, res) {
-    const helporders = await HelpOrder.findAll({ where: { answer: null } });
+    const { page = 1 } = req.query;
+
+    const helporders = await HelpOrder.findAll({
+      where: { answer: null },
+      limit: 10,
+      offset: (page - 1) * 10,
+    });
     return res.json(helporders);
   }
 
@@ -28,8 +34,12 @@ class HelpOrderController {
   }
 
   async indexStudentQuestions(req, res) {
+    const { page = 1 } = req.query;
+
     const helporders = await HelpOrder.findAll({
       where: { student_id: req.params.id },
+      limit: 10,
+      offset: (page - 1) * 10,
     });
     return res.json(helporders);
   }

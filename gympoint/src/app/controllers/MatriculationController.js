@@ -9,10 +9,14 @@ import Queue from '../../lib/Queue';
 
 class MatriculationController {
   async index(req, res) {
+    const { page = 1 } = req.query;
+
     const matriculations = await Matriculation.findAll({
       attributes: ['id', 'start_date', 'end_date', 'price', 'active'],
       where: { canceled_at: null },
       order: ['id'],
+      limit: 10,
+      offset: (page - 1) * 10,
     });
     return res.json(matriculations);
   }
