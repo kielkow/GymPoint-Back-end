@@ -8,8 +8,8 @@ class CheckinController {
 
     const checkins = await Checkin.findAll({
       where: { student_id: req.params.id },
-      limit: 10,
-      offset: (page - 1) * 10,
+      limit: 8,
+      offset: (page - 1) * 8,
     });
     return res.json(checkins);
   }

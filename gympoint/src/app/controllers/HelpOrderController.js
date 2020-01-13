@@ -10,8 +10,8 @@ class HelpOrderController {
 
     const helporders = await HelpOrder.findAll({
       where: { answer: null },
-      limit: 10,
-      offset: (page - 1) * 10,
+      limit: 8,
+      offset: (page - 1) * 8,
     });
     return res.json(helporders);
   }
