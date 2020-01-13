@@ -6,7 +6,9 @@ class Matriculation extends Model {
     super.init(
       {
         student_id: Sequelize.INTEGER,
+        student_name: Sequelize.STRING,
         plan_id: Sequelize.INTEGER,
+        plan_name: Sequelize.STRING,
         start_date: Sequelize.DATE,
         end_date: Sequelize.DATE,
         price: Sequelize.FLOAT,

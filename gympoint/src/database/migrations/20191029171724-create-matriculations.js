@@ -14,11 +14,19 @@ module.exports = {
         onDelete: 'SET NULL',
         allowNull: false,
       },
+      student_name: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
       plan_id: {
         type: Sequelize.INTEGER,
         references: { model: 'plans', key: 'id' },
         onUpdate: 'CASCADE',
         onDelete: 'SET NULL',
+        allowNull: false,
+      },
+      plan_name: {
+        type: Sequelize.STRING,
         allowNull: false,
       },
       start_date: {

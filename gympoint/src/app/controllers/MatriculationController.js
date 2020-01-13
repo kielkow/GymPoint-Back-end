@@ -12,12 +12,23 @@ class MatriculationController {
     const { page = 1 } = req.query;
 
     const matriculations = await Matriculation.findAll({
-      attributes: ['id', 'start_date', 'end_date', 'price', 'active'],
+      attributes: [
+        'id',
+        'student_id',
+        'student_name',
+        'plan_id',
+        'plan_name',
+        'start_date',
+        'end_date',
+        'price',
+        'active',
+      ],
       where: { canceled_at: null },
       order: ['id'],
       limit: 8,
       offset: (page - 1) * 8,
     });
+
     return res.json(matriculations);
   }
 
@@ -46,6 +57,11 @@ class MatriculationController {
 
     if (!plan) return res.status(400).json({ error: 'Plan not found' });
 
+    // Check if student exists
+    const student = await Student.findByPk(req.body.student_id);
+
+    if (!student) return res.status(400).json({ error: 'Student not found' });
+
     // Calculated price and end_date
     const price = plan.duration * plan.price;
     const end_date = addMonths(
@@ -56,7 +72,9 @@ class MatriculationController {
     // Create matriculation
     const matriculation = {
       student_id: req.body.student_id,
+      student_name: student.name,
       plan_id: req.body.plan_id,
+      plan_name: plan.title,
       start_date: zonedTimeToUtc(
         parseISO(req.body.start_date),
         'America/Sao_Paulo'
@@ -68,7 +86,6 @@ class MatriculationController {
     await Matriculation.create(matriculation);
 
     // Send email for student
-    const student = await Student.findByPk(req.body.student_id);
     await Queue.add(MatriculationMail.key, {
       matriculation,
       student,
