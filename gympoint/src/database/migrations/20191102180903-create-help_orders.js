@@ -14,6 +14,10 @@ module.exports = {
         onDelete: 'SET NULL',
         allowNull: false,
       },
+      student_name: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
       question: {
         type: Sequelize.STRING,
         allowNull: false,

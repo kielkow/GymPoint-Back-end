@@ -25,8 +25,14 @@ class HelpOrderController {
       return res.status(400).json({ error: 'Validation fails' });
     }
 
+    // Check if student exists
+    const student = await Student.findByPk(req.params.id);
+
+    if (!student) return res.status(400).json({ error: 'Student not found' });
+
     const question = await HelpOrder.create({
       student_id: req.params.id,
+      student_name: student.name,
       question: req.body.question,
     });
 
@@ -38,8 +44,8 @@ class HelpOrderController {
 
     const helporders = await HelpOrder.findAll({
       where: { student_id: req.params.id },
-      limit: 10,
-      offset: (page - 1) * 10,
+      limit: 8,
+      offset: (page - 1) * 8,
     });
     return res.json(helporders);
   }
