@@ -45,7 +45,7 @@ class MatriculationController {
 
     // Check if matriculation already exists
     const matriculationExists = await Matriculation.findOne({
-      where: { student_id: req.body.student_id },
+      where: { student_id: req.body.student_id, canceled_at: null },
     });
 
     if (matriculationExists) {
