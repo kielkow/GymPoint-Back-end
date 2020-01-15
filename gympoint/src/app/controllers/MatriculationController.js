@@ -133,15 +133,16 @@ class MatriculationController {
   }
 
   async delete(req, res) {
-    const matriculation = await Matriculation.findOne({
-      where: { student_id: req.params.id },
-    });
+    const matriculation = await Matriculation.findByPk(req.params.id);
 
     matriculation.canceled_at = new Date();
 
-    await matriculation.save();
-
-    return res.json(matriculation);
+    try {
+      await matriculation.save();
+      return res.json(matriculation);
+    } catch (err) {
+      return res.json({ error: err });
+    }
   }
 }
 
