@@ -124,6 +124,7 @@ class MatriculationController {
     // Update matriculation
     await matriculation.update({
       plan_id: req.body.plan_id,
+      plan_name: plan.title,
       start_date: req.body.start_date,
       end_date,
       price,
