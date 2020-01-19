@@ -1,4 +1,5 @@
 import * as Yup from 'yup';
+import { Op } from 'sequelize';
 import { addMonths, parseISO } from 'date-fns';
 import { zonedTimeToUtc } from 'date-fns-tz';
 import Matriculation from '../models/Matriculation';
@@ -10,6 +11,32 @@ import Queue from '../../lib/Queue';
 class MatriculationController {
   async index(req, res) {
     const { page = 1 } = req.query;
+
+    if (req.query.student_name) {
+      const matriculations = await Matriculation.findAll({
+        attributes: [
+          'id',
+          'student_id',
+          'student_name',
+          'plan_id',
+          'plan_name',
+          'start_date',
+          'end_date',
+          'price',
+          'active',
+        ],
+        where: {
+          student_name: {
+            [Op.iRegexp]: req.query.student_name,
+          },
+          canceled_at: null,
+        },
+        order: ['id'],
+        limit: 8,
+        offset: (page - 1) * 8,
+      });
+      return res.json(matriculations);
+    }
 
     const matriculations = await Matriculation.findAll({
       attributes: [

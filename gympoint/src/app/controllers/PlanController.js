@@ -1,9 +1,25 @@
 import * as Yup from 'yup';
+import { Op } from 'sequelize';
 import Plan from '../models/Plan';
 
 class PlanController {
   async index(req, res) {
     const { page = 1 } = req.query;
+
+    if (req.query.title) {
+      const plans = await Plan.findAll({
+        where: {
+          title: {
+            [Op.iRegexp]: req.query.title,
+          },
+          canceled_at: null,
+        },
+        order: ['id'],
+        limit: 8,
+        offset: (page - 1) * 8,
+      });
+      return res.json(plans);
+    }
 
     const plans = await Plan.findAll({
       where: { canceled_at: null },
